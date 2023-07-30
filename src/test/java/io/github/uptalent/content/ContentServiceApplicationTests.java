@@ -1,4 +1,4 @@
-package com.uptalent.content;
+package io.github.uptalent.content;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

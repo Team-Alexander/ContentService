@@ -1,4 +1,4 @@
-package com.uptalent.content.model;
+package io.github.uptalent.content.model.enums;
 
 public enum ContentStatus {
     DRAFT, PUBLISHED, HIDDEN
