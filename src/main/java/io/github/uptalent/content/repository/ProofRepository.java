@@ -1,6 +1,6 @@
-package com.uptalent.content.repository;
+package io.github.uptalent.content.repository;
 
-import com.uptalent.content.model.Proof;
+import io.github.uptalent.content.model.document.Proof;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ProofRepository extends MongoRepository<Proof, String> {
