@@ -1,5 +1,6 @@
 package io.github.uptalent.content.controller;
 
+import io.github.uptalent.content.model.request.AuthorUpdate;
 import io.github.uptalent.content.model.request.ProofModify;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
 import io.github.uptalent.content.model.response.ProofDetailInfo;
@@ -57,5 +58,19 @@ public class ProofController {
     public void deleteProof(@RequestHeader(USER_ID_KEY) String userId,
                             @PathVariable String contentId) {
         proofService.deleteProof(userId, contentId);
+    }
+
+    @PostMapping("/author")
+    @PreAuthorize("hasAuthority('TALENT')")
+    void updateProofsByAuthor(@RequestHeader(USER_ID_KEY) String authorId,
+                              @RequestBody AuthorUpdate authorUpdate) {
+        proofService.updateProofsByAuthor(authorId, authorUpdate);
+    }
+
+    @DeleteMapping("/author")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('TALENT')")
+    public void deleteProofsByAuthor(@RequestHeader(USER_ID_KEY) String userId) {
+        proofService.deleteProofsByAuthor(userId);
     }
 }
