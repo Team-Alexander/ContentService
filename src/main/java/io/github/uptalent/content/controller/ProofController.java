@@ -1,7 +1,9 @@
 package io.github.uptalent.content.controller;
 
+import io.github.uptalent.content.model.request.PostKudosSkills;
 import io.github.uptalent.content.model.request.ProofModify;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
+import io.github.uptalent.content.model.response.PostKudosResult;
 import io.github.uptalent.content.model.response.ProofDetailInfo;
 import io.github.uptalent.content.model.response.ProofGeneralInfo;
 import io.github.uptalent.content.service.ContentService;
@@ -57,5 +59,13 @@ public class ProofController {
     public void deleteProof(@RequestHeader(USER_ID_KEY) String userId,
                             @PathVariable String contentId) {
         proofService.deleteProof(userId, contentId);
+    }
+
+    @PostMapping("/{proofId}/kudos")
+    @PreAuthorize("hasAuthority('SPONSOR')")
+    public PostKudosResult postKudos(@RequestHeader(USER_ID_KEY) Long userId,
+                                     @Valid @RequestBody PostKudosSkills request,
+                                     @PathVariable String proofId) {
+        return proofService.postKudos(request, proofId, userId);
     }
 }
