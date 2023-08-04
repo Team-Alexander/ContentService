@@ -15,7 +15,7 @@ import static io.github.uptalent.content.model.enums.ContentStatus.PUBLISHED;
 
 @Service
 @RequiredArgsConstructor
-public class ProofSaveVisitor implements ContentSaveVisitor {
+public class ContentSaveVisitorImpl implements ContentSaveVisitor {
     private final ProofService proofService;
     private final ProofMapper proofMapper;
 
