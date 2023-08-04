@@ -2,8 +2,10 @@ package io.github.uptalent.content.exception.handler;
 
 import io.github.uptalent.content.exception.ContentNotFoundException;
 import io.github.uptalent.content.exception.IllegalContentModifyingException;
+import io.github.uptalent.content.exception.IllegalPostingKudosException;
 import io.github.uptalent.starter.util.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,8 +19,15 @@ public class ContentExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(IllegalContentModifyingException.class)
+    @ExceptionHandler({IllegalContentModifyingException.class,
+            IllegalPostingKudosException.class})
     public ErrorResponse handlerConflictException(RuntimeException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ErrorResponse handlerAccessDeniedException(RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
