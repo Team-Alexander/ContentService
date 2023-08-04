@@ -1,5 +1,6 @@
 package io.github.uptalent.content.model.document;
 
+import io.github.uptalent.content.model.common.SkillKudos;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
