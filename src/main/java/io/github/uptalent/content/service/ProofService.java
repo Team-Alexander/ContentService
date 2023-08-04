@@ -8,11 +8,10 @@ import io.github.uptalent.content.exception.SponsorNotFoundException;
 import io.github.uptalent.content.mapper.ProofMapper;
 import io.github.uptalent.content.model.document.KudosHistory;
 import io.github.uptalent.content.model.document.Proof;
-import io.github.uptalent.content.model.document.SkillKudos;
+import io.github.uptalent.content.model.common.SkillKudos;
 import io.github.uptalent.content.model.request.PostKudosSkills;
 import io.github.uptalent.content.model.response.PostKudosResult;
 import io.github.uptalent.content.model.common.Author;
-import io.github.uptalent.content.model.document.Proof;
 import io.github.uptalent.content.model.request.AuthorUpdate;
 import io.github.uptalent.content.model.response.ProofDetailInfo;
 import io.github.uptalent.content.model.response.ProofGeneralInfo;
@@ -25,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static io.github.uptalent.content.model.enums.ContentStatus.PUBLISHED;
 import static io.github.uptalent.content.util.ContentUtils.checkAuthorship;
@@ -85,22 +85,21 @@ public class ProofService {
         if (!proof.getStatus().equals(PUBLISHED))
             throw new AccessDeniedException("You cannot get access to proof.");
 
-        try {
-            request.getKudosedSkills()
-                    .forEach((skill, postedKudos) -> proof.getSkills().merge(skill, postedKudos, Long::sum));
-        } catch (NullPointerException e) {
-            throw new IllegalPostingKudosException("Some skills do not contained in the proof.");
-        }
+        List<SkillKudos> kudosedSkills = request.getKudosedSkills();
+        Set<String> proofSkills = proof.getSkills().keySet();
 
-        proofRepository.save(proof);
+        kudosedSkills.forEach(skillKudos -> {
+            String skill = skillKudos.getSkill();
+            if (proofSkills.contains(skill)) {
+                proof.getSkills().merge(skill, skillKudos.getKudos(), Long::sum);
+            } else {
+                throw new IllegalPostingKudosException("The skill " +  skill + " does not exist in the proof.");
+            }
+        });
 
-        long sumKudos = request.getKudosedSkills().values().stream()
-                .mapToLong(Long::longValue)
+        long sumKudos = kudosedSkills.stream()
+                .mapToLong(SkillKudos::getKudos)
                 .sum();
-
-        List<SkillKudos> kudosedSkills = request.getKudosedSkills().entrySet().stream()
-                .map(kudosedSkill -> new SkillKudos(kudosedSkill.getKey(), kudosedSkill.getValue()))
-                .toList();
 
         KudosHistory kudosHistory = KudosHistory.builder()
                 .kudos(sumKudos)
@@ -110,16 +109,23 @@ public class ProofService {
                 .kudosedSkills(kudosedSkills)
                 .build();
 
+        PostKudosResult result = calculateKudosTransaction(sumKudos, sponsorId, proof);
+
         kudosHistoryRepository.save(kudosHistory);
 
-        return calculateKudosTransaction(sumKudos, sponsorId, proof);
+        return result;
     }
 
     private PostKudosResult calculateKudosTransaction(Long sumKudos, Long sponsorId, Proof proof) {
         long currentSponsorBalance = calculateCurrentSponsorBalance(sumKudos);
-        long currentSumKudosBySponsor = kudosHistoryRepository.sumKudosByProofIdAndSponsorId(proof.getId(), sponsorId);
+
+        long additionalSumKudos = kudosHistoryRepository.sumKudosByProofIdAndSponsorId(proof.getId(), sponsorId).orElse(0L);
+        long currentSumKudosBySponsor = sumKudos + additionalSumKudos;
+
         long currentProofKudos = proof.getKudos() + sumKudos;
         proof.setKudos(currentProofKudos);
+
+        proofRepository.save(proof);
 
         return new PostKudosResult(currentProofKudos, currentSumKudosBySponsor, currentSponsorBalance);
     }
@@ -130,7 +136,7 @@ public class ProofService {
             long currentSponsorBalance = sponsorBalance - sumKudos;
 
             if (currentSponsorBalance < 0L)
-                throw new IllegalPostingKudosException("You do not have balance for posting kudos.");
+                throw new IllegalPostingKudosException("You do not have enough balance for posting kudos.");
 
             accountClient.updateSponsorBalance(currentSponsorBalance);
 
@@ -138,8 +144,5 @@ public class ProofService {
         } catch (FeignException.NotFound e) {
             throw new SponsorNotFoundException();
         }
-
     }
-
-
 }

@@ -21,7 +21,7 @@ public class ContentSaveVisitorImpl implements ContentSaveVisitor {
 
     @Override
     public URI saveContent(Author author, ProofModify proofModify) {
-        if (proofModify.getSkills().isEmpty() && proofModify.getStatus().equals(PUBLISHED)) {
+        if (proofModify.getSkills().isEmpty() && proofModify.getStatus().equals(PUBLISHED.name())) {
             throw new IllegalContentModifyingException("Skills should be set for publishing");
         }
 
