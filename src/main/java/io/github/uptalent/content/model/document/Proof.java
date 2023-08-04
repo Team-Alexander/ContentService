@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Map;
+
 @Data
 @SuperBuilder
 @AllArgsConstructor
@@ -17,4 +19,5 @@ public class Proof extends Content {
     private int iconNumber;
     private String summary;
     private long kudos;
+    private Map<String, Long> skills;
 }
