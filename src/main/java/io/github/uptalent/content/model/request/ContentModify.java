@@ -9,13 +9,14 @@ import io.github.uptalent.content.service.visitor.ContentSaveVisitor;
 import io.github.uptalent.content.service.visitor.ContentUpdateVisitor;
 import io.github.uptalent.starter.util.enums.EnumValue;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -38,8 +39,9 @@ public abstract class ContentModify {
     @EnumValue(enumClass = ContentStatus.class)
     private String status;
 
-    @Size(max = 30, message = "List of skills should be less than 30 items")
-    private List<Long> skillIds;
+    @NotNull(message = "List of skills should not be null")
+    @Size(max=30, message = "List of skills should be less than 30 items")
+    private Set<String> skills;
 
     public abstract URI accept(Author author, ContentSaveVisitor visitor);
 

@@ -30,9 +30,9 @@ public class ContentUpdateVisitorImpl implements ContentUpdateVisitor {
     private static final Map<Pair<ContentStatus, ContentStatus>, BiConsumer<Content, ContentModify>>
             STRATEGY_MAP = new HashMap<>();
 
-    static {
-        STRATEGY_MAP.put(new Pair<>(DRAFT, DRAFT), ContentUpdateVisitorImpl::updateContentData);
-        STRATEGY_MAP.put(new Pair<>(DRAFT, PUBLISHED), ContentUpdateVisitorImpl::publishContent);
+    {
+        STRATEGY_MAP.put(new Pair<>(DRAFT, DRAFT), this::updateContentData);
+        STRATEGY_MAP.put(new Pair<>(DRAFT, PUBLISHED), this::publishContent);
         STRATEGY_MAP.put(new Pair<>(PUBLISHED, HIDDEN), (content, contentModify) -> content.setStatus(HIDDEN));
         STRATEGY_MAP.put(new Pair<>(HIDDEN, PUBLISHED), (content, contentModify) -> content.setStatus(PUBLISHED));
     }
@@ -50,19 +50,19 @@ public class ContentUpdateVisitorImpl implements ContentUpdateVisitor {
         return proofMapper.toProofDetailInfo(proof);
     }
 
-    //TODO refactor
-    private static void updateContentData(Content content, ContentModify contentModify) {
+    private void updateContentData(Content content, ContentModify contentModify) {
         if(contentModify instanceof ProofModify proofModify) {
             Proof proof = (Proof) content;
             proof.setTitle(proofModify.getTitle());
             proof.setSummary(proofModify.getSummary());
             proof.setContent(proofModify.getContent());
             proof.setIconNumber(proofModify.getIconNumber());
+            proof.setSkills(proofMapper.convertSkills(proofModify.getSkills()));
         }
     }
 
-    private static void publishContent(Content content, ContentModify contentModify) {
-        if (contentModify.getSkillIds() == null || contentModify.getSkillIds().isEmpty()) {
+    private void publishContent(Content content, ContentModify contentModify) {
+        if (contentModify.getSkills().isEmpty()) {
             throw new IllegalContentModifyingException("Skills should be set for publishing");
         }
         updateContentData(content, contentModify);

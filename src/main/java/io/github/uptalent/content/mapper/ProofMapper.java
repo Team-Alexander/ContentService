@@ -6,7 +6,10 @@ import io.github.uptalent.content.model.response.ProofDetailInfo;
 import io.github.uptalent.content.model.response.ProofGeneralInfo;
 import org.mapstruct.Mapper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Mapper
 public interface ProofMapper {
@@ -15,4 +18,10 @@ public interface ProofMapper {
     ProofDetailInfo toProofDetailInfo(Proof proof);
 
     List<ProofGeneralInfo> toProofGeneralInfoList(List<Proof> proofs);
+
+    default Map<String, Long> convertSkills(Set<String> skills) {
+        Map<String, Long> kudosedSkills = new HashMap<>();
+        skills.forEach(skill -> kudosedSkills.put(skill, 0L));
+        return kudosedSkills;
+    }
 }
