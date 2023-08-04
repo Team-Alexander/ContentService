@@ -54,12 +54,12 @@ public class ProofController {
         return contentService.updateContent(userId, contentId, proofModify);
     }
 
-    @DeleteMapping("/{contentId}")
+    @DeleteMapping("/{proofId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('TALENT')")
     public void deleteProof(@RequestHeader(USER_ID_KEY) String userId,
-                            @PathVariable String contentId) {
-        proofService.deleteProof(userId, contentId);
+                            @PathVariable String proofId) {
+        proofService.deleteProof(userId, proofId);
     }
 
 
@@ -69,10 +69,11 @@ public class ProofController {
                                      @Valid @RequestBody PostKudosSkills request,
                                      @PathVariable String proofId) {
         return proofService.postKudos(request, proofId, userId);
+    }
 
     @PostMapping("/author")
     @PreAuthorize("hasAuthority('TALENT')")
-    void updateProofsByAuthor(@RequestHeader(USER_ID_KEY) String authorId,
+    public void updateProofsByAuthor(@RequestHeader(USER_ID_KEY) String authorId,
                               @RequestBody AuthorUpdate authorUpdate) {
         proofService.updateProofsByAuthor(authorId, authorUpdate);
     }
