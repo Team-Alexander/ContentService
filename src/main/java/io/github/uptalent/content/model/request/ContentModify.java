@@ -23,6 +23,7 @@ import java.util.Set;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ProofModify.class, name = "proofModify"),
+        @JsonSubTypes.Type(value = VacancyModify.class, name = "vacancyModify")
 })
 @Data
 @AllArgsConstructor
