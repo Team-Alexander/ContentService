@@ -71,19 +71,7 @@ public class ContentUpdateVisitorImpl implements ContentUpdateVisitor {
     }
 
     private void updateContentData(Content content, ContentModify contentModify) {
-        if(contentModify instanceof ProofModify proofModify) {
-            Proof proof = (Proof) content;
-            proof.setTitle(proofModify.getTitle());
-            proof.setSummary(proofModify.getSummary());
-            proof.setContent(proofModify.getContent());
-            proof.setIconNumber(proofModify.getIconNumber());
-            proof.setSkills(proofMapper.convertSkills(proofModify.getSkills()));
-        } else if (contentModify instanceof VacancyModify vacancyModify) {
-            Vacancy vacancy = (Vacancy) content;
-            vacancy.setTitle(vacancyModify.getTitle());
-            vacancy.setContent(vacancyModify.getContent());
-            vacancy.setSkills(vacancyModify.getSkills());
-        }
+        contentModify.updateContentData(content);
     }
 
     private void publishContent(Content content, ContentModify contentModify) {

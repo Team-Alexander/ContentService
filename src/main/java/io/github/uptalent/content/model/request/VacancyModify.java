@@ -1,6 +1,8 @@
 package io.github.uptalent.content.model.request;
 
 import io.github.uptalent.content.model.common.Author;
+import io.github.uptalent.content.model.document.Content;
+import io.github.uptalent.content.model.document.Vacancy;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
 import io.github.uptalent.content.service.visitor.ContentSaveVisitor;
 import io.github.uptalent.content.service.visitor.ContentUpdateVisitor;
@@ -22,5 +24,13 @@ public class VacancyModify extends ContentModify {
     @Override
     public ContentDetailInfo accept(String userId, String contentId, ContentUpdateVisitor visitor) {
         return visitor.updateContent(userId, contentId, this);
+    }
+
+    @Override
+    public void updateContentData(Content content) {
+        Vacancy vacancy = (Vacancy) content;
+        vacancy.setTitle(super.getTitle());
+        vacancy.setContent(super.getContent());
+        vacancy.setSkills(super.getSkills());
     }
 }

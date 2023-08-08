@@ -3,6 +3,7 @@ package io.github.uptalent.content.model.request;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.uptalent.content.model.common.Author;
+import io.github.uptalent.content.model.document.Content;
 import io.github.uptalent.content.model.enums.ContentStatus;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
 import io.github.uptalent.content.service.visitor.ContentSaveVisitor;
@@ -47,4 +48,6 @@ public abstract class ContentModify {
     public abstract URI accept(Author author, ContentSaveVisitor visitor);
 
     public abstract ContentDetailInfo accept(String userId, String contentId, ContentUpdateVisitor visitor);
+
+    public abstract void updateContentData(Content content);
 }
