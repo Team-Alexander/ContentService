@@ -1,6 +1,8 @@
 package io.github.uptalent.content.model.request;
 
 import io.github.uptalent.content.model.common.Author;
+import io.github.uptalent.content.model.document.Content;
+import io.github.uptalent.content.model.document.Proof;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
 import io.github.uptalent.content.service.visitor.ContentSaveVisitor;
 import io.github.uptalent.content.service.visitor.ContentUpdateVisitor;
@@ -13,6 +15,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -34,5 +38,17 @@ public class ProofModify extends ContentModify {
     @Override
     public ContentDetailInfo accept(String userId, String contentId, ContentUpdateVisitor visitor) {
         return visitor.updateContent(userId, contentId, this);
+    }
+
+    @Override
+    public void updateContentData(Content content) {
+        Proof proof = (Proof) content;
+        proof.setTitle(super.getTitle());
+        proof.setSummary(this.getSummary());
+        proof.setContent(super.getContent());
+        proof.setIconNumber(this.getIconNumber());
+        Map<String, Long> kudosedSkills = new HashMap<>();
+        super.getSkills().forEach(skill -> kudosedSkills.put(skill, 0L));
+        proof.setSkills(kudosedSkills);
     }
 }
