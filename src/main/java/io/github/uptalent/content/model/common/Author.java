@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class Author {
-    private String id;
+    private long id;
     private String name;
     private String avatar;
 }

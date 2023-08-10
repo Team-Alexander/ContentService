@@ -48,7 +48,7 @@ public class ProofController {
 
     @PatchMapping("/{contentId}")
     @PreAuthorize("hasAuthority('TALENT')")
-    public ContentDetailInfo updateProof(@RequestHeader(USER_ID_KEY) String userId,
+    public ContentDetailInfo updateProof(@RequestHeader(USER_ID_KEY) Long userId,
                                          @PathVariable String contentId,
                                          @Valid @RequestBody ProofModify proofModify) {
         return contentService.updateContent(userId, contentId, proofModify);
@@ -57,7 +57,7 @@ public class ProofController {
     @DeleteMapping("/{proofId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('TALENT')")
-    public void deleteProof(@RequestHeader(USER_ID_KEY) String userId,
+    public void deleteProof(@RequestHeader(USER_ID_KEY) Long userId,
                             @PathVariable String proofId) {
         proofService.deleteProof(userId, proofId);
     }

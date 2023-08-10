@@ -8,8 +8,8 @@ import static io.github.uptalent.starter.util.Constants.ACCESS_DENIED_MESSAGE;
 public final class ContentUtils {
     private ContentUtils() {}
 
-    public static void checkAuthorship(String userId, Content content) {
-        if(!content.getAuthor().getId().equals(userId)) {
+    public static void checkAuthorship(Long userId, Content content) {
+        if(content.getAuthor().getId() != userId) {
             throw new AccessDeniedException(ACCESS_DENIED_MESSAGE);
         }
     }
