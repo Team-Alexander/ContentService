@@ -5,8 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -17,4 +19,6 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class Vacancy extends Content {
     private Set<String> skills;
+    @DBRef
+    private List<Submission> submissions;
 }
