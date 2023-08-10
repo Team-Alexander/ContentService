@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface VacancyRepository extends MongoRepository<Vacancy, String> {
-    List<Vacancy> findAllByAuthorId(String authorId);
-    void deleteAllByAuthorId(String authorId);
+    List<Vacancy> findAllByAuthorId(Long authorId);
+    void deleteAllByAuthorId(Long authorId);
 }
