@@ -45,7 +45,7 @@ public class ProofService {
         return proofMapper.toProofDetailInfo(getProofById(id));
     }
 
-    public void deleteProof(String userId, String proofId) {
+    public void deleteProof(Long userId, String proofId) {
         Proof proof = getProofById(proofId);
         checkAuthorship(userId, proof);
         proofRepository.delete(proof);
@@ -59,23 +59,6 @@ public class ProofService {
             author.setAvatar(authorUpdate.getAvatar());
         });
         proofRepository.saveAll(proofs);
-    }
-
-    public void deleteProofsByAuthor(String authorId) {
-        proofRepository.deleteAllByAuthorId(authorId);
-    }
-
-    public Proof getProofById(String id) {
-        return proofRepository.findById(id)
-                .orElseThrow(ProofNotFoundException::new);
-    }
-
-    public Proof save(Proof proof) {
-        return proofRepository.insert(proof);
-    }
-
-    public Proof update(Proof proof) {
-        return proofRepository.save(proof);
     }
 
     @Transactional
@@ -144,5 +127,22 @@ public class ProofService {
         } catch (FeignException.NotFound e) {
             throw new SponsorNotFoundException();
         }
+    }
+
+    public void deleteProofsByAuthor(String authorId) {
+        proofRepository.deleteAllByAuthorId(authorId);
+    }
+
+    public Proof getProofById(String id) {
+        return proofRepository.findById(id)
+                .orElseThrow(ProofNotFoundException::new);
+    }
+
+    public Proof save(Proof proof) {
+        return proofRepository.insert(proof);
+    }
+
+    public Proof update(Proof proof) {
+        return proofRepository.save(proof);
     }
 }

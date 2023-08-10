@@ -24,7 +24,7 @@ public class ContentService {
         return contentModify.accept(author, contentSaveVisitor);
     }
 
-    public ContentDetailInfo updateContent(String userId, String contentId, ContentModify contentModify) {
+    public ContentDetailInfo updateContent(Long userId, String contentId, ContentModify contentModify) {
         return contentModify.accept(userId, contentId, contentUpdateVisitor);
     }
 }

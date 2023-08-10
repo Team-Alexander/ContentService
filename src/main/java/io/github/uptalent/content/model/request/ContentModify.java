@@ -47,7 +47,7 @@ public abstract class ContentModify {
 
     public abstract URI accept(Author author, ContentSaveVisitor visitor);
 
-    public abstract ContentDetailInfo accept(String userId, String contentId, ContentUpdateVisitor visitor);
+    public abstract ContentDetailInfo accept(Long userId, String contentId, ContentUpdateVisitor visitor);
 
     public abstract void updateContentData(Content content);
 }

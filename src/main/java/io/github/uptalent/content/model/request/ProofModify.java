@@ -36,7 +36,7 @@ public class ProofModify extends ContentModify {
     }
 
     @Override
-    public ContentDetailInfo accept(String userId, String contentId, ContentUpdateVisitor visitor) {
+    public ContentDetailInfo accept(Long userId, String contentId, ContentUpdateVisitor visitor) {
         return visitor.updateContent(userId, contentId, this);
     }
 

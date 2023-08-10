@@ -44,7 +44,7 @@ public class ContentUpdateVisitorImpl implements ContentUpdateVisitor {
     }
 
     @Override
-    public ContentDetailInfo updateContent(String userId, String contentId, ProofModify proofModify) {
+    public ContentDetailInfo updateContent(Long userId, String contentId, ProofModify proofModify) {
         Proof proof = proofService.getProofById(contentId);
         checkAuthorship(userId, proof);
 
@@ -57,7 +57,7 @@ public class ContentUpdateVisitorImpl implements ContentUpdateVisitor {
     }
 
     @Override
-    public ContentDetailInfo updateContent(String userId, String contentId, VacancyModify proofModify) {
+    public ContentDetailInfo updateContent(Long userId, String contentId, VacancyModify proofModify) {
 
         Vacancy vacancy = vacancyService.getVacancyById(contentId);
         checkAuthorship(userId, vacancy);
