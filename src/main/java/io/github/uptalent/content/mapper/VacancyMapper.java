@@ -6,7 +6,6 @@ import io.github.uptalent.content.model.request.SubmissionRequest;
 import io.github.uptalent.content.model.request.VacancyModify;
 import io.github.uptalent.content.model.response.*;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 
