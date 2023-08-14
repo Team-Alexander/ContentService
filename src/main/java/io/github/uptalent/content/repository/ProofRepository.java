@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface ProofRepository extends MongoRepository<Proof, String> {
-    List<Proof> findAllByAuthorId(String authorId);
+    List<Proof> findAllByAuthorId(Long authorId);
 
-    void deleteAllByAuthorId(String authorId);
+    void deleteAllByAuthorId(Long authorId);
 }

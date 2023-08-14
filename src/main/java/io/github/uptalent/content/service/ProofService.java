@@ -51,7 +51,7 @@ public class ProofService {
         proofRepository.delete(proof);
     }
 
-    public void updateProofsByAuthor(String authorId, AuthorUpdate authorUpdate) {
+    public void updateProofsByAuthor(Long authorId, AuthorUpdate authorUpdate) {
         List<Proof> proofs = proofRepository.findAllByAuthorId(authorId);
         proofs.forEach(proof -> {
             Author author = proof.getAuthor();
@@ -129,7 +129,7 @@ public class ProofService {
         }
     }
 
-    public void deleteProofsByAuthor(String authorId) {
+    public void deleteProofsByAuthor(Long authorId) {
         proofRepository.deleteAllByAuthorId(authorId);
     }
 
