@@ -73,15 +73,14 @@ public class ProofController {
 
     @PostMapping("/author")
     @PreAuthorize("hasAuthority('TALENT')")
-    public void updateProofsByAuthor(@RequestHeader(USER_ID_KEY) String authorId,
+    public void updateProofsByAuthor(@RequestHeader(USER_ID_KEY) Long authorId,
                               @RequestBody AuthorUpdate authorUpdate) {
         proofService.updateProofsByAuthor(authorId, authorUpdate);
     }
 
-    @DeleteMapping("/author")
+    @DeleteMapping("/author/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('TALENT')")
-    public void deleteProofsByAuthor(@RequestHeader(USER_ID_KEY) String userId) {
+    public void deleteProofsByAuthor(@PathVariable Long userId) {
         proofService.deleteProofsByAuthor(userId);
 
     }
