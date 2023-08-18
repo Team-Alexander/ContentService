@@ -6,8 +6,10 @@ import io.github.uptalent.content.exception.IllegalActionToSubmissionException;
 import io.github.uptalent.content.exception.SubmissionNotFoundException;
 import io.github.uptalent.content.mapper.VacancyMapper;
 import io.github.uptalent.content.model.common.Author;
+import io.github.uptalent.content.model.common.EventNotificationMessage;
 import io.github.uptalent.content.model.document.Submission;
 import io.github.uptalent.content.model.document.Vacancy;
+import io.github.uptalent.content.model.enums.EventNotificationType;
 import io.github.uptalent.content.model.request.SubmissionRequest;
 import io.github.uptalent.content.model.response.SubmissionDetailInfo;
 import io.github.uptalent.content.model.response.TalentSubmission;
@@ -23,11 +25,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.uptalent.content.model.constant.EventNotificationConstant.SPONSOR_SUFFIX;
+import static io.github.uptalent.content.model.constant.EventNotificationConstant.SUBMISSION_LINK;
 import static io.github.uptalent.content.model.enums.SubmissionStatus.SENT;
 
 @Service
 @RequiredArgsConstructor
 public class SubmissionService {
+    private final EventNotificationProducerService eventNotificationProducerService;
     private final SubmissionRepository submissionRepository;
     private final VacancyMapper vacancyMapper;
     private final AccountClient accountClient;
@@ -39,10 +44,10 @@ public class SubmissionService {
         checkTalentSubmissionForVacancy(talentId, vacancy);
 
         Submission submission = vacancyMapper.toSubmission(submissionRequest);
-        Author author = accountClient.getAuthor();
+        Author authorTalent = accountClient.getAuthor();
 
         submission.setVacancy(vacancy);
-        submission.setAuthor(author);
+        submission.setAuthor(authorTalent);
         submission.setSent(LocalDateTime.now());
         submission.setStatus(SENT);
 
@@ -53,6 +58,8 @@ public class SubmissionService {
         }
         vacancy.getSubmissions().add(submission);
         vacancyService.update(vacancy);
+
+        sendEventNotification(authorTalent, vacancy.getAuthor().getId(), submission.getId());
 
         return vacancyMapper.toSubmissionDetailInfo(submission);
     }
@@ -92,5 +99,15 @@ public class SubmissionService {
     private void checkTalentSubmissionForVacancy(Long talentId, Vacancy vacancy) {
         if(submissionRepository.existsSubmissionByAuthorIdAndVacancyId(talentId, vacancy.getId()))
             throw new DuplicateSubmissionException();
+    }
+
+    private void sendEventNotification(Author talent, Long sponsorId, String submissionId) {
+        String to = sponsorId + SPONSOR_SUFFIX;
+        String messageBody = EventNotificationType.POST_SUBMISSION.getMessageBody();
+        String contentLink =  SUBMISSION_LINK + submissionId;
+
+        EventNotificationMessage eventNotificationMessage = new EventNotificationMessage(talent, to,
+                messageBody, contentLink);
+        eventNotificationProducerService.sendEventNotificationMsg(eventNotificationMessage);
     }
 }
