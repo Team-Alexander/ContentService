@@ -12,7 +12,8 @@ public class ContentExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({
             ContentNotFoundException.class,
-            SponsorNotFoundException.class
+            SponsorNotFoundException.class,
+            SubmissionNotFoundException.class
     })
     public ErrorResponse handlerNotFoundException(RuntimeException e) {
         return new ErrorResponse(e.getMessage());
@@ -22,7 +23,8 @@ public class ContentExceptionHandler {
     @ExceptionHandler({
             IllegalContentModifyingException.class,
             IllegalPostingKudosException.class,
-            DuplicateSubmissionException.class
+            DuplicateSubmissionException.class,
+            IllegalActionToSubmissionException.class
     })
     public ErrorResponse handlerConflictException(RuntimeException e) {
         return new ErrorResponse(e.getMessage());
