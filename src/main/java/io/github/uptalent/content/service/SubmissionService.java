@@ -2,6 +2,8 @@ package io.github.uptalent.content.service;
 
 import io.github.uptalent.content.client.AccountClient;
 import io.github.uptalent.content.exception.DuplicateSubmissionException;
+import io.github.uptalent.content.exception.IllegalActionToSubmissionException;
+import io.github.uptalent.content.exception.SubmissionNotFoundException;
 import io.github.uptalent.content.mapper.VacancyMapper;
 import io.github.uptalent.content.model.common.Author;
 import io.github.uptalent.content.model.document.Submission;
@@ -14,6 +16,7 @@ import io.github.uptalent.starter.pagination.PageWithMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -67,6 +70,23 @@ public class SubmissionService {
                 .toList();
 
         return new PageWithMetadata<>(talentSubmissions, submissionsPage.getTotalPages());
+    }
+
+    public void deleteSubmission(String submissionId, Long userId, String userRole) {
+        Submission submission = submissionRepository.findById(submissionId)
+                .orElseThrow(SubmissionNotFoundException::new);
+
+        if (userRole.equals("TALENT") && !userId.equals(submission.getAuthor().getId())) {
+            throw new AccessDeniedException("You have not access to the submission");
+        }
+        if (userRole.equals("SPONSOR") && !userId.equals(submission.getVacancy().getAuthor().getId())) {
+            throw new IllegalActionToSubmissionException("Cannot delete submission from this vacancy");
+        }
+        if (!submission.getStatus().equals(SENT)) {
+            throw new IllegalActionToSubmissionException("Cannot delete approved or denied submissions");
+        }
+
+        submissionRepository.delete(submission);
     }
 
     private void checkTalentSubmissionForVacancy(Long talentId, Vacancy vacancy) {
