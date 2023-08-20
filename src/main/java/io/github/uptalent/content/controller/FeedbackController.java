@@ -27,7 +27,7 @@ public class FeedbackController {
     }
 
     @PreAuthorize("hasAuthority('SPONSOR')")
-    @PostMapping("/templated")
+    @GetMapping("/templated")
     public List<TemplatedFeedbackInfo> findAllTemplatedFeedbacks(@RequestHeader(USER_ID_KEY) Long sponsorId) {
         return feedbackService.findTemplatedFeedbackBySponsorId(sponsorId);
     }
