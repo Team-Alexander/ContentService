@@ -1,10 +1,14 @@
 package io.github.uptalent.content.service;
 
+import io.github.uptalent.content.client.AccountClient;
 import io.github.uptalent.content.exception.SubmissionNotFoundException;
 import io.github.uptalent.content.mapper.TemplatedFeedbackMapper;
+import io.github.uptalent.content.model.common.Author;
+import io.github.uptalent.content.model.common.EventNotificationMessage;
 import io.github.uptalent.content.model.common.Feedback;
 import io.github.uptalent.content.model.document.Submission;
 import io.github.uptalent.content.model.document.TemplatedFeedback;
+import io.github.uptalent.content.model.enums.EventNotificationType;
 import io.github.uptalent.content.model.request.TemplatedFeedbackInfo;
 import io.github.uptalent.content.repository.SubmissionRepository;
 import io.github.uptalent.content.repository.TemplatedFeedbackRepository;
@@ -16,12 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static io.github.uptalent.content.model.constant.EventNotificationConstant.TALENT_SUFFIX;
+import static io.github.uptalent.content.model.constant.EventNotificationConstant.VACANCY_LINK;
+
 @Service
 @RequiredArgsConstructor
 public class FeedbackService {
     private final TemplatedFeedbackRepository templatedFeedbackRepository;
+    private final AccountClient accountClient;
     private final SubmissionRepository submissionRepository;
     private final TemplatedFeedbackMapper templatedFeedbackMapper;
+    private final EventNotificationProducerService eventNotificationProducerService;
 
     @Transactional
     public void createTemplatedFeedback(TemplatedFeedbackInfo templatedFeedbackInfo, Long sponsorId) {
@@ -51,6 +60,7 @@ public class FeedbackService {
 
         submission.setFeedback(feedback);
         submissionRepository.save(submission);
+        sendEventNotification(submission.getAuthor().getId(), submission.getVacancy().getId());
 
         if (saveAsTemplated) {
             String title = generateTemplatedFeedbackTitle(sponsorId);
@@ -61,5 +71,16 @@ public class FeedbackService {
 
     private String generateTemplatedFeedbackTitle(Long sponsorId) {
         return "Templated Title-" + UUID.randomUUID() + "-" + sponsorId.toString();
+    }
+
+    private void sendEventNotification(Long talentId, String vacancyId) {
+        Author authorSponsor = accountClient.getAuthor();
+        String to = talentId + TALENT_SUFFIX;
+        String messageBody = EventNotificationType.POST_FEEDBACK.getMessageBody();
+        String contentLink = VACANCY_LINK + vacancyId;
+
+        EventNotificationMessage eventNotificationMessage
+                = new EventNotificationMessage(authorSponsor, to, messageBody, contentLink);
+        eventNotificationProducerService.sendEventNotificationMsg(eventNotificationMessage);
     }
 }

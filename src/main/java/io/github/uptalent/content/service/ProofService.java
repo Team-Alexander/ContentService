@@ -6,9 +6,11 @@ import io.github.uptalent.content.exception.IllegalPostingKudosException;
 import io.github.uptalent.content.exception.ProofNotFoundException;
 import io.github.uptalent.content.exception.SponsorNotFoundException;
 import io.github.uptalent.content.mapper.ProofMapper;
+import io.github.uptalent.content.model.common.EventNotificationMessage;
 import io.github.uptalent.content.model.document.KudosHistory;
 import io.github.uptalent.content.model.document.Proof;
 import io.github.uptalent.content.model.common.SkillKudos;
+import io.github.uptalent.content.model.enums.EventNotificationType;
 import io.github.uptalent.content.model.request.PostKudosSkills;
 import io.github.uptalent.content.model.response.PostKudosResult;
 import io.github.uptalent.content.model.common.Author;
@@ -25,16 +27,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import static io.github.uptalent.content.model.constant.EventNotificationConstant.PROOFS_LINK;
+import static io.github.uptalent.content.model.constant.EventNotificationConstant.TALENT_SUFFIX;
 import static io.github.uptalent.content.model.enums.ContentStatus.PUBLISHED;
 import static io.github.uptalent.content.util.ContentUtils.checkAuthorship;
 
 @Service
 @RequiredArgsConstructor
 public class ProofService {
+
     private final ProofRepository proofRepository;
     private final ProofMapper proofMapper;
     private final AccountClient accountClient;
+    private final EventNotificationProducerService eventNotificationProducerService;
     private final KudosHistoryRepository kudosHistoryRepository;
 
     public List<ProofGeneralInfo> findAll() {
@@ -95,6 +102,7 @@ public class ProofService {
         PostKudosResult result = calculateKudosTransaction(sumKudos, sponsorId, proof);
 
         kudosHistoryRepository.save(kudosHistory);
+        sendEventNotification(request, proof);
 
         return result;
     }
@@ -127,6 +135,24 @@ public class ProofService {
         } catch (FeignException.NotFound e) {
             throw new SponsorNotFoundException();
         }
+    }
+
+    private String generateSkillKudosEventMessage(PostKudosSkills request) {
+        return request.getKudosedSkills().stream()
+                .map(skillKudos -> skillKudos.getSkill() + ":" + skillKudos.getSkill())
+                .collect(Collectors.joining(","));
+    }
+
+    private void sendEventNotification(PostKudosSkills request, Proof proof) {
+        Author author = accountClient.getAuthor();
+        String requestInfo = generateSkillKudosEventMessage(request);
+        String to = proof.getAuthor().getId() + TALENT_SUFFIX;
+        String messageBody = String.format(EventNotificationType.POST_KUDOS.getMessageBody(), requestInfo);
+        String contentLink = PROOFS_LINK + proof.getId();
+
+        EventNotificationMessage eventNotificationMessage = new EventNotificationMessage(author, to,
+                messageBody, contentLink);
+        eventNotificationProducerService.sendEventNotificationMsg(eventNotificationMessage);
     }
 
     public void deleteProofsByAuthor(Long authorId) {
