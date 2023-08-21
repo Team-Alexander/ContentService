@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient("account-service")
+@FeignClient("uptalent-account")
 @Retry(name = "default")
 public interface AccountClient {
     @GetMapping("/api/v1/account/author")
