@@ -15,6 +15,7 @@ import io.github.uptalent.content.model.response.SubmissionDetailInfo;
 import io.github.uptalent.content.model.response.TalentSubmission;
 import io.github.uptalent.content.repository.SubmissionRepository;
 import io.github.uptalent.starter.pagination.PageWithMetadata;
+import io.github.uptalent.starter.security.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -83,10 +84,10 @@ public class SubmissionService {
         Submission submission = submissionRepository.findById(submissionId)
                 .orElseThrow(SubmissionNotFoundException::new);
 
-        if (userRole.equals("TALENT") && !userId.equals(submission.getAuthor().getId())) {
+        if (userRole.equals(Role.TALENT.name()) && !userId.equals(submission.getAuthor().getId())) {
             throw new AccessDeniedException("You have not access to the submission");
         }
-        if (userRole.equals("SPONSOR") && !userId.equals(submission.getVacancy().getAuthor().getId())) {
+        if (userRole.equals(Role.SPONSOR.name()) && !userId.equals(submission.getVacancy().getAuthor().getId())) {
             throw new IllegalActionToSubmissionException("Cannot delete submission from this vacancy");
         }
         if (!submission.getStatus().equals(SENT)) {
