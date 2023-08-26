@@ -5,15 +5,14 @@ import io.github.uptalent.content.exception.DuplicateSubmissionException;
 import io.github.uptalent.content.exception.IllegalActionToSubmissionException;
 import io.github.uptalent.content.exception.SubmissionNotFoundException;
 import io.github.uptalent.content.mapper.VacancyMapper;
-import io.github.uptalent.content.model.common.Author;
-import io.github.uptalent.content.model.common.EventNotificationMessage;
 import io.github.uptalent.content.model.document.Submission;
 import io.github.uptalent.content.model.document.Vacancy;
-import io.github.uptalent.content.model.enums.EventNotificationType;
 import io.github.uptalent.content.model.request.SubmissionRequest;
 import io.github.uptalent.content.model.response.SubmissionDetailInfo;
 import io.github.uptalent.content.model.response.TalentSubmission;
 import io.github.uptalent.content.repository.SubmissionRepository;
+import io.github.uptalent.starter.model.common.Author;
+import io.github.uptalent.starter.model.common.EventNotificationMessage;
 import io.github.uptalent.starter.pagination.PageWithMetadata;
 import io.github.uptalent.starter.security.Role;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +22,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.uptalent.content.model.constant.EventNotificationConstant.SPONSOR_SUFFIX;
-import static io.github.uptalent.content.model.constant.EventNotificationConstant.SUBMISSION_LINK;
 import static io.github.uptalent.content.model.enums.SubmissionStatus.SENT;
+import static io.github.uptalent.starter.model.enums.EventNotificationType.POST_SUBMISSION;
+import static io.github.uptalent.starter.util.Constants.SPONSOR_SUFFIX;
+import static io.github.uptalent.starter.util.Constants.SUBMISSIONS_LINK;
 
 @Service
 @RequiredArgsConstructor
@@ -54,9 +53,6 @@ public class SubmissionService {
 
         submission = submissionRepository.save(submission);
 
-        if (vacancy.getSubmissions() == null) {
-            vacancy.setSubmissions(new ArrayList<>());
-        }
         vacancy.getSubmissions().add(submission);
         vacancyService.update(vacancy);
 
@@ -104,11 +100,15 @@ public class SubmissionService {
 
     private void sendEventNotification(Author talent, Long sponsorId, String submissionId) {
         String to = sponsorId + SPONSOR_SUFFIX;
-        String messageBody = EventNotificationType.POST_SUBMISSION.getMessageBody();
-        String contentLink =  SUBMISSION_LINK + submissionId;
+        String messageBody = POST_SUBMISSION.getMessageBody();
+        String contentLink =  SUBMISSIONS_LINK + submissionId;
 
-        EventNotificationMessage eventNotificationMessage = new EventNotificationMessage(talent, to,
-                messageBody, contentLink);
+        var eventNotificationMessage = EventNotificationMessage.builder()
+                .from(talent)
+                .to(to)
+                .message(messageBody)
+                .contentLink(contentLink)
+                .build();
         eventNotificationProducerService.sendEventNotificationMsg(eventNotificationMessage);
     }
 }
