@@ -2,12 +2,12 @@ package io.github.uptalent.content.service;
 
 import io.github.uptalent.content.exception.VacancyNotFoundException;
 import io.github.uptalent.content.mapper.VacancyMapper;
-import io.github.uptalent.content.model.common.Author;
 import io.github.uptalent.content.model.document.Vacancy;
 import io.github.uptalent.content.model.request.AuthorUpdate;
 import io.github.uptalent.content.model.response.*;
 import io.github.uptalent.content.repository.SubmissionRepository;
 import io.github.uptalent.content.repository.VacancyRepository;
+import io.github.uptalent.starter.model.common.Author;
 import io.github.uptalent.starter.security.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

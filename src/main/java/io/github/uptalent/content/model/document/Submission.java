@@ -1,8 +1,8 @@
 package io.github.uptalent.content.model.document;
 
-import io.github.uptalent.content.model.common.Author;
 import io.github.uptalent.content.model.common.Feedback;
 import io.github.uptalent.content.model.enums.SubmissionStatus;
+import io.github.uptalent.starter.model.common.Author;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

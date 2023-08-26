@@ -1,11 +1,11 @@
 package io.github.uptalent.content.model.request;
 
-import io.github.uptalent.content.model.common.Author;
 import io.github.uptalent.content.model.document.Content;
 import io.github.uptalent.content.model.document.Vacancy;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
 import io.github.uptalent.content.service.visitor.ContentSaveVisitor;
 import io.github.uptalent.content.service.visitor.ContentUpdateVisitor;
+import io.github.uptalent.starter.model.common.Author;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

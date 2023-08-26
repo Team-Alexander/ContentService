@@ -1,7 +1,7 @@
 package io.github.uptalent.content.client;
 
-import io.github.uptalent.content.model.common.Author;
 import io.github.resilience4j.retry.annotation.Retry;
+import io.github.uptalent.starter.model.common.Author;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;

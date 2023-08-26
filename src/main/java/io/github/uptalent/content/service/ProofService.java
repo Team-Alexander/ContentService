@@ -6,19 +6,18 @@ import io.github.uptalent.content.exception.IllegalPostingKudosException;
 import io.github.uptalent.content.exception.ProofNotFoundException;
 import io.github.uptalent.content.exception.SponsorNotFoundException;
 import io.github.uptalent.content.mapper.ProofMapper;
-import io.github.uptalent.content.model.common.EventNotificationMessage;
 import io.github.uptalent.content.model.document.KudosHistory;
 import io.github.uptalent.content.model.document.Proof;
 import io.github.uptalent.content.model.common.SkillKudos;
-import io.github.uptalent.content.model.enums.EventNotificationType;
 import io.github.uptalent.content.model.request.PostKudosSkills;
 import io.github.uptalent.content.model.response.PostKudosResult;
-import io.github.uptalent.content.model.common.Author;
 import io.github.uptalent.content.model.request.AuthorUpdate;
 import io.github.uptalent.content.model.response.ProofDetailInfo;
 import io.github.uptalent.content.model.response.ProofGeneralInfo;
 import io.github.uptalent.content.repository.KudosHistoryRepository;
 import io.github.uptalent.content.repository.ProofRepository;
+import io.github.uptalent.starter.model.common.Author;
+import io.github.uptalent.starter.model.common.EventNotificationMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -29,10 +28,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.github.uptalent.content.model.constant.EventNotificationConstant.PROOFS_LINK;
-import static io.github.uptalent.content.model.constant.EventNotificationConstant.TALENT_SUFFIX;
 import static io.github.uptalent.content.model.enums.ContentStatus.PUBLISHED;
 import static io.github.uptalent.content.util.ContentUtils.checkAuthorship;
+import static io.github.uptalent.starter.model.enums.EventNotificationType.POST_KUDOS;
+import static io.github.uptalent.starter.util.Constants.PROOFS_LINK;
+import static io.github.uptalent.starter.util.Constants.TALENT_SUFFIX;
 
 @Service
 @RequiredArgsConstructor
@@ -147,11 +147,15 @@ public class ProofService {
         Author author = accountClient.getAuthor();
         String requestInfo = generateSkillKudosEventMessage(request);
         String to = proof.getAuthor().getId() + TALENT_SUFFIX;
-        String messageBody = String.format(EventNotificationType.POST_KUDOS.getMessageBody(), requestInfo);
+        String messageBody = String.format(POST_KUDOS.getMessageBody(), requestInfo);
         String contentLink = PROOFS_LINK + proof.getId();
 
-        EventNotificationMessage eventNotificationMessage = new EventNotificationMessage(author, to,
-                messageBody, contentLink);
+        var eventNotificationMessage = EventNotificationMessage.builder()
+                .from(author)
+                .to(to)
+                .message(messageBody)
+                .contentLink(contentLink)
+                .build();
         eventNotificationProducerService.sendEventNotificationMsg(eventNotificationMessage);
     }
 

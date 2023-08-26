@@ -1,11 +1,11 @@
 package io.github.uptalent.content.model.request;
 
-import io.github.uptalent.content.model.common.Author;
 import io.github.uptalent.content.model.document.Content;
 import io.github.uptalent.content.model.document.Proof;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
 import io.github.uptalent.content.service.visitor.ContentSaveVisitor;
 import io.github.uptalent.content.service.visitor.ContentUpdateVisitor;
+import io.github.uptalent.starter.model.common.Author;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

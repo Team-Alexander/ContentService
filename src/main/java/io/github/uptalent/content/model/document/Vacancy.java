@@ -8,6 +8,8 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +20,7 @@ import java.util.Set;
 @Document("vacancies")
 @EqualsAndHashCode(callSuper = true)
 public class Vacancy extends Content {
-    private Set<String> skills;
+    private Set<String> skills = new HashSet<>();
     @DBRef
-    private List<Submission> submissions;
+    private List<Submission> submissions = new ArrayList<>();
 }
