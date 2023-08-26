@@ -1,7 +1,7 @@
 package io.github.uptalent.content.model.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.github.uptalent.content.model.common.Author;
+import io.github.uptalent.starter.model.common.Author;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 

@@ -66,9 +66,9 @@ public class VacancyController {
     }
 
 
-    @PostMapping("/author")
+    @PatchMapping("/author")
     @PreAuthorize("hasAuthority('SPONSOR')")
-    public void updateProofsByAuthor(@RequestHeader(USER_ID_KEY) Long authorId,
+    public void updateVacanciesByAuthor(@RequestHeader(USER_ID_KEY) Long authorId,
                                      @RequestBody AuthorUpdate authorUpdate) {
         vacancyService.updateVacanciesByAuthor(authorId, authorUpdate);
     }
@@ -76,7 +76,7 @@ public class VacancyController {
     @DeleteMapping("/author")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('SPONSOR')")
-    public void deleteProofsByAuthor(@RequestHeader(USER_ID_KEY) Long userId) {
+    public void deleteVacanciesByAuthor(@RequestHeader(USER_ID_KEY) Long userId) {
         vacancyService.deleteVacanciesByAuthor(userId);
     }
 

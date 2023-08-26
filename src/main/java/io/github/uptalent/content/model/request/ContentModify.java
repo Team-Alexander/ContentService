@@ -2,12 +2,12 @@ package io.github.uptalent.content.model.request;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import io.github.uptalent.content.model.common.Author;
 import io.github.uptalent.content.model.document.Content;
 import io.github.uptalent.content.model.enums.ContentStatus;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
 import io.github.uptalent.content.service.visitor.ContentSaveVisitor;
 import io.github.uptalent.content.service.visitor.ContentUpdateVisitor;
+import io.github.uptalent.starter.model.common.Author;
 import io.github.uptalent.starter.util.enums.EnumValue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

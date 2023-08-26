@@ -1,6 +1,6 @@
 package io.github.uptalent.content.model.response;
 
-import io.github.uptalent.content.model.common.Author;
+import io.github.uptalent.starter.model.common.Author;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

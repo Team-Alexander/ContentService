@@ -71,7 +71,7 @@ public class ProofController {
         return proofService.postKudos(request, proofId, userId);
     }
 
-    @PostMapping("/author")
+    @PatchMapping("/author")
     @PreAuthorize("hasAuthority('TALENT')")
     public void updateProofsByAuthor(@RequestHeader(USER_ID_KEY) Long authorId,
                               @RequestBody AuthorUpdate authorUpdate) {
@@ -82,6 +82,5 @@ public class ProofController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProofsByAuthor(@PathVariable Long userId) {
         proofService.deleteProofsByAuthor(userId);
-
     }
 }

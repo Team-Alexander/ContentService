@@ -1,6 +1,6 @@
 package io.github.uptalent.content.service;
 
-import io.github.uptalent.content.model.common.EventNotificationMessage;
+import io.github.uptalent.starter.model.common.EventNotificationMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
