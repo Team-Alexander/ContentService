@@ -7,11 +7,13 @@ import io.github.uptalent.content.model.document.Content;
 import io.github.uptalent.content.model.document.Proof;
 import io.github.uptalent.content.model.document.Vacancy;
 import io.github.uptalent.content.model.enums.ContentStatus;
+import io.github.uptalent.content.model.enums.ContentType;
 import io.github.uptalent.content.model.request.ContentModify;
 import io.github.uptalent.content.model.request.ProofModify;
 import io.github.uptalent.content.model.request.VacancyModify;
 import io.github.uptalent.content.model.response.ContentDetailInfo;
 import io.github.uptalent.content.service.ProofService;
+import io.github.uptalent.content.service.ReportService;
 import io.github.uptalent.content.service.VacancyService;
 import io.github.uptalent.content.util.Pair;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class ContentUpdateVisitorImpl implements ContentUpdateVisitor {
     private final ProofMapper proofMapper;
     private final VacancyService vacancyService;
     private final VacancyMapper vacancyMapper;
+    private final ReportService reportService;
 
     private static final Map<Pair<ContentStatus, ContentStatus>, BiConsumer<Content, ContentModify>>
             STRATEGY_MAP = new HashMap<>();
@@ -53,6 +56,8 @@ public class ContentUpdateVisitorImpl implements ContentUpdateVisitor {
 
         proof = proofService.update(proof);
 
+        reportService.checkToxicity(proof.getId(), proof.getAuthor().getName(), ContentType.PROOF);
+
         return proofMapper.toProofDetailInfo(proof);
     }
 
@@ -66,6 +71,8 @@ public class ContentUpdateVisitorImpl implements ContentUpdateVisitor {
         modifyingStrategy.accept(vacancy, proofModify);
 
         vacancy = vacancyService.update(vacancy);
+
+        reportService.checkToxicity(vacancy.getId(), vacancy.getAuthor().getName(), ContentType.VACANCY);
 
         return vacancyMapper.toVacancyDetailInfo(vacancy);
     }

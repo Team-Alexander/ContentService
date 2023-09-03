@@ -5,9 +5,11 @@ import io.github.uptalent.content.mapper.ProofMapper;
 import io.github.uptalent.content.mapper.VacancyMapper;
 import io.github.uptalent.content.model.document.Proof;
 import io.github.uptalent.content.model.document.Vacancy;
+import io.github.uptalent.content.model.enums.ContentType;
 import io.github.uptalent.content.model.request.ProofModify;
 import io.github.uptalent.content.model.request.VacancyModify;
 import io.github.uptalent.content.service.ProofService;
+import io.github.uptalent.content.service.ReportService;
 import io.github.uptalent.content.service.VacancyService;
 import io.github.uptalent.starter.model.common.Author;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 
 import static io.github.uptalent.content.model.enums.ContentStatus.PUBLISHED;
+import static io.github.uptalent.starter.security.Role.TALENT;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ public class ContentSaveVisitorImpl implements ContentSaveVisitor {
     private final ProofMapper proofMapper;
     private final VacancyService vacancyService;
     private final VacancyMapper vacancyMapper;
+    private final ReportService reportService;
 
     @Override
     public URI saveContent(Author author, ProofModify proofModify) {
@@ -44,6 +48,7 @@ public class ContentSaveVisitorImpl implements ContentSaveVisitor {
 
         proof = proofService.save(proof);
 
+        reportService.checkToxicity(proof.getId(), proof.getAuthor().getName(), ContentType.PROOF);
 
         return ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -66,6 +71,8 @@ public class ContentSaveVisitorImpl implements ContentSaveVisitor {
         }
 
         vacancy = vacancyService.save(vacancy);
+
+        reportService.checkToxicity(vacancy.getId(), vacancy.getAuthor().getName(), ContentType.VACANCY);
 
         return ServletUriComponentsBuilder
                 .fromCurrentRequest()
