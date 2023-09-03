@@ -5,8 +5,10 @@ import io.github.uptalent.content.model.request.SubmissionRequest;
 import io.github.uptalent.content.model.request.VacancyModify;
 import io.github.uptalent.content.model.response.*;
 import io.github.uptalent.content.service.ContentService;
+import io.github.uptalent.content.service.ReportService;
 import io.github.uptalent.content.service.SubmissionService;
 import io.github.uptalent.content.service.VacancyService;
+import io.github.uptalent.starter.model.request.ReportRequest;
 import io.github.uptalent.starter.security.Role;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class VacancyController {
     private final ContentService contentService;
     private final VacancyService vacancyService;
     private final SubmissionService submissionService;
+    private final ReportService reportService;
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
@@ -87,5 +90,12 @@ public class VacancyController {
                                                 @RequestHeader(USER_ID_KEY) Long talentId,
                                                 @PathVariable String vacancyId) {
         return submissionService.sendSubmission(talentId, vacancyId, submissionRequest);
+    }
+
+    @PostMapping("/{id}/report")
+    @PreAuthorize("isAuthenticated()")
+    public void reportVacancy(@PathVariable String id,
+                             @RequestBody @Valid ReportRequest reportRequest){
+        reportService.reportVacancy(id, reportRequest);
     }
 }

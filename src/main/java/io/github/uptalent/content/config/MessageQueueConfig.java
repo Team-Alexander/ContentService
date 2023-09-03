@@ -16,10 +16,28 @@ public class MessageQueueConfig {
     private String eventNotificationQueue;
     @Value("${rabbitmq.routing-key.event_notification}")
     private String eventNotificationRoutingKey;
+    @Value("${rabbitmq.queue.blocked-content}")
+    private String blockedContentQueue;
+    @Value("${rabbitmq.queue.unblocked-content}")
+    private String unblockedContentQueue;
+    @Value("${rabbitmq.routing-key.blocked-content}")
+    private String blockedContentRoutingKey;
+    @Value("${rabbitmq.routing-key.unblocked-content}")
+    private String unblockedContentRoutingKey;
 
     @Bean
     public Queue eventNotificationQueue() {
         return new Queue(eventNotificationQueue);
+    }
+
+    @Bean
+    public Queue blockedContentQueue() {
+        return new Queue(blockedContentQueue);
+    }
+
+    @Bean
+    public Queue unblockedContentQueue() {
+        return new Queue(unblockedContentQueue);
     }
 
     @Bean
@@ -33,5 +51,20 @@ public class MessageQueueConfig {
                 .bind(eventNotificationQueue())
                 .to(exchange())
                 .with(eventNotificationRoutingKey);
+    }
+
+    @Bean
+    public Binding blockedContentBinding() {
+        return BindingBuilder
+                .bind(blockedContentQueue())
+                .to(exchange())
+                .with(blockedContentRoutingKey);
+    }
+    @Bean
+    public Binding unblockedContentBinding() {
+        return BindingBuilder
+                .bind(unblockedContentQueue())
+                .to(exchange())
+                .with(unblockedContentRoutingKey);
     }
 }

@@ -18,7 +18,10 @@ import io.github.uptalent.content.repository.KudosHistoryRepository;
 import io.github.uptalent.content.repository.ProofRepository;
 import io.github.uptalent.starter.model.common.Author;
 import io.github.uptalent.starter.model.common.EventNotificationMessage;
+import io.github.uptalent.starter.model.enums.ModerationStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +69,10 @@ public class ProofService {
             author.setAvatar(authorUpdate.getAvatar());
         });
         proofRepository.saveAll(proofs);
+    }
+
+    public Page<Proof> getAllByModerationStatus(PageRequest pageRequest, ModerationStatus status) {
+        return proofRepository.findAllByModerationStatus(pageRequest, status);
     }
 
     @Transactional

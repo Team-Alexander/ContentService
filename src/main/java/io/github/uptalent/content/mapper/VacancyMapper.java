@@ -1,5 +1,6 @@
 package io.github.uptalent.content.mapper;
 
+import io.github.uptalent.content.model.document.Proof;
 import io.github.uptalent.content.model.document.Submission;
 import io.github.uptalent.content.model.document.Vacancy;
 import io.github.uptalent.content.model.request.SubmissionRequest;
@@ -20,4 +21,5 @@ public interface VacancyMapper {
     SubmissionGeneralInfo  toSubmissionGeneralInfo(Submission submission);
     SubmissionDetailInfo toSubmissionDetailInfo(Submission submission);
     ContentGeneralInfo  toContentGeneralInfo(Vacancy vacancy);
+    List<ContentReport> toContentReports(List<Vacancy> vacancies);
 }

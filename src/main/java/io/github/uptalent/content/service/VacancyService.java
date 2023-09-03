@@ -8,8 +8,11 @@ import io.github.uptalent.content.model.response.*;
 import io.github.uptalent.content.repository.SubmissionRepository;
 import io.github.uptalent.content.repository.VacancyRepository;
 import io.github.uptalent.starter.model.common.Author;
+import io.github.uptalent.starter.model.enums.ModerationStatus;
 import io.github.uptalent.starter.security.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -77,5 +80,9 @@ public class VacancyService {
 
     public Vacancy update(Vacancy vacancy) {
         return vacancyRepository.save(vacancy);
+    }
+
+    public Page<Vacancy> getAllByModerationStatus(PageRequest pageRequest, ModerationStatus status) {
+        return vacancyRepository.findAllByModerationStatus(pageRequest, status);
     }
 }

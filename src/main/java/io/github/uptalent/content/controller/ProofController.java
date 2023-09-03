@@ -9,6 +9,8 @@ import io.github.uptalent.content.model.response.ProofDetailInfo;
 import io.github.uptalent.content.model.response.ProofGeneralInfo;
 import io.github.uptalent.content.service.ContentService;
 import io.github.uptalent.content.service.ProofService;
+import io.github.uptalent.content.service.ReportService;
+import io.github.uptalent.starter.model.request.ReportRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ import static io.github.uptalent.starter.util.Constants.USER_ID_KEY;
 public class ProofController {
     private final ContentService contentService;
     private final ProofService proofService;
+    private final ReportService reportService;
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
@@ -82,5 +85,12 @@ public class ProofController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProofsByAuthor(@PathVariable Long userId) {
         proofService.deleteProofsByAuthor(userId);
+    }
+
+    @PostMapping("/{id}/report")
+    @PreAuthorize("isAuthenticated()")
+    public void reportProof(@PathVariable String id,
+                            @RequestBody @Valid ReportRequest reportRequest){
+        reportService.reportProof(id, reportRequest);
     }
 }
